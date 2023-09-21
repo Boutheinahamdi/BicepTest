@@ -38,9 +38,9 @@ jobs:
         with:
           subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
           resourceGroup: $RESOURCE_GROUP
+          template: ./main.bicep
           additionalParameters: webAppName=$WEBAPP_NAME # optional
-        env:
-          ARM_TEMPLATE: main.bicep          
+           
   deploy-azure-bicep-dev:
     environment: dev
     needs: [preview-bicep-changes]
