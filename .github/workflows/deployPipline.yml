@@ -38,7 +38,7 @@ jobs:
         with:
           subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
           resourceGroup: $RESOURCE_GROUP
-          templateFile: main.bicep
+          templateFile: ../main.bicep
           additionalParameters: webAppName=$WEBAPP_NAME # optional
           
   deploy-azure-bicep-dev:
