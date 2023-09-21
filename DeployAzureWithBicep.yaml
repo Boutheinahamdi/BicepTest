@@ -38,7 +38,7 @@ jobs:
         with:
           subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
           resourceGroup: $RESOURCE_GROUP
-          templateFile: 01-bicep-webapp/webapp-linux.bicep # ARM template or Bicep file
+          templateFile: main.yaml #can be ARM
           additionalParameters: webAppName=$WEBAPP_NAME # optional
           
   deploy-azure-bicep-dev:
@@ -66,6 +66,6 @@ jobs:
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP }}
-          template: 01-bicep-webapp/webapp-linux.bicep
+          template: main.yaml
           parameters: webAppName=${{ env.WEBAPP_NAME }}
           failOnStdErr: false
