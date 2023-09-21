@@ -33,12 +33,14 @@ jobs:
           inlineScript: |
             az version
             az group create -n $RESOURCE_GROUP -l westeurope
+      - name: Download Template File  
+        run: curl -L https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.yaml --output template.yaml
       - name: Preview Changes
         uses: Azure/deployment-what-if-action@v1.0.0
         with:
           subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
           resourceGroup: $RESOURCE_GROUP
-          template-uri: https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.yaml --output template.yaml
+          templateFile: template.yaml
           additionalParameters: webAppName=$WEBAPP_NAME # optional
           
   deploy-azure-bicep-dev:
