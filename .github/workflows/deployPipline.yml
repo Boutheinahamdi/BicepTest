@@ -36,7 +36,7 @@ jobs:
         run: |
           az deployment group what-if \
             --resource-group $RESOURCE_GROUP \
-            --template-uri https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.bicep
+            --template-uri https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.json
           # Add any additional Azure CLI commands here
         env:
           RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
