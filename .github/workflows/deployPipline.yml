@@ -66,6 +66,6 @@ jobs:
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.RESOURCE_GROUP }}
-          template: ../main.yaml
+          templateFile: ./main.bicep
           parameters: webAppName=${{ env.WEBAPP_NAME }}
           failOnStdErr: false
