@@ -1,0 +1,71 @@
+name: Deploy-Azure-Bicep
+
+
+on:
+  pull_request:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP: rg-bicep-github-actions
+  WEBAPP_NAME: webapp
+
+jobs:
+  preview-bicep-changes:
+    
+    runs-on: ubuntu-latest
+
+    steps:
+      
+      - uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: Azure/login@v1.4.3
+        with:
+          # Paste output of `az ad sp create-for-rbac` as value of secret variable: AZURE_CREDENTIALS
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Azure Resource Group
+        uses: Azure/cli@v1.0.6
+        with:
+      
+          inlineScript: |
+            az version
+            az group create -n $RESOURCE_GROUP -l westeurope
+      - name: Preview Changes
+        uses: Azure/deployment-what-if-action@v1.0.0
+        with:
+          subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
+          resourceGroup: $RESOURCE_GROUP
+          templateFile: 01-bicep-webapp/webapp-linux.bicep # ARM template or Bicep file
+          additionalParameters: webAppName=$WEBAPP_NAME # optional
+          
+  deploy-azure-bicep-dev:
+    environment: dev
+    needs: [preview-bicep-changes]
+    
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: Azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Azure Resource Group
+        uses: Azure/cli@v1.0.6
+        with:
+          inlineScript: |
+            az version
+            az group create -n $RESOURCE_GROUP -l westeurope
+
+      - name: Deploy Bicep to Azure
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.RESOURCE_GROUP }}
+          template: 01-bicep-webapp/webapp-linux.bicep
+          parameters: webAppName=${{ env.WEBAPP_NAME }}
+          failOnStdErr: false
