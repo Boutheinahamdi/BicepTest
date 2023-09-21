@@ -27,19 +27,19 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Azure Resource Group
-        uses: Azure/cli@v1.0.6
-        with:
-      
-          inlineScript: |
-            az version
-            az group create -n $RESOURCE_GROUP -l westeurope
+        run: |
+          az version
+          az group create -n $RESOURCE_GROUP -l westeurope
+        env:
+          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
       - name: Preview Changes
-        uses: Azure/deployment-what-if-action@v1.0.0
-        with:
-          subscription: ${{ secrets.SUBSCRIPTION_ID  }} 
-          resourceGroup: $RESOURCE_GROUP
-          templateFile: https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.bicep
-          additionalParameters: webAppName=$WEBAPP_NAME # optional
+        run: |
+          az deployment group what-if \
+            --resource-group $RESOURCE_GROUP \
+            --template-uri https://raw.githubusercontent.com/Boutheinahamdi/BicepTest/main/main.bicep
+          # Add any additional Azure CLI commands here
+        env:
+          RESOURCE_GROUP: ${{ env.RESOURCE_GROUP }}
            
   deploy-azure-bicep-dev:
     environment: dev
